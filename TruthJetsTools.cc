@@ -23,13 +23,32 @@ using namespace std;
 TruthJetsTools::TruthJetsTools(){
 }
 
+// JVF Moment calculator 
+float TruthJetsTools::JVFMomentCalculator(fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles,  bool gaussianWeight, float sigma, float maxdR){
+    // JVF = HS / (PU + HS), HS = sum_{hs tracks} ( p_T * Gaus(dR) * H(dR - maxdR)), PU = sum_{pu tracks} ( p_T * Gaus(dR) * H(dR - maxdR)) 
+    // Gausian weight is ignored if bool gaussianWeight=false.
+    float HS=0;
+    float PU=0;
+    for(int ip=0; ip<otherParticles.size(); ++ip){
+        if(particle == otherParticles[ip])               continue;
+        if(particle.delta_R(otherParticles[ip]) > maxdR) continue;
+        float weight = (gaussianWeight) ? TMath::Gaus(otherParticles[ip].delta_R(particle), 0, sigma, false):1; 
+        if   (otherParticles[ip].user_info<MyUserInfo>().is_pileup()) PU += otherParticles[ip].pt() * weight; 
+        else                                                          HS += otherParticles[ip].pt() * weight;
+    }
+
+    float result = -1;
+    if( HS + PU >0) result = HS / (HS + PU);
+    return result;
+}
 
 // Pt Moment calculator
-float TruthJetsTools::PtMoment(fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles, float sigma){
-
+float TruthJetsTools::PtMoment(fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles, float sigma, float maxdR){
+    // sum p_T * Gaus(delta_R, sigma)*H(delta_R - maxdR), H=heavyside function
     float sum = 0;
     for(int ip=0; ip<otherParticles.size(); ++ip){
-        if(particle == otherParticles[ip]) continue; 
+        if(particle == otherParticles[ip])               continue; 
+        if(particle.delta_R(otherParticles[ip]) > maxdR) continue;
         sum  += otherParticles[ip].pt() * TMath::Gaus(otherParticles[ip].delta_R(particle), 0, sigma, false);
     }
 

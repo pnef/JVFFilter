@@ -51,7 +51,6 @@ int main(int argc, char* argv[]){
     int nPU            = 0;
     int nFlatPUMax     = 0;
     int seed           = -1;
-    string infile = "/u/at/pnef/Work/Code/MadGraph/MG5_aMC_v2_0_1/HP_tt_20140314/Events/run_01/unweighted_events.lhe";
     string outName = "TopToHc.root";
 
     po::options_description desc("Allowed options");
@@ -59,7 +58,6 @@ int main(int argc, char* argv[]){
       ("help", "produce help message")
       ("NEvents",        po::value<int>(&nEvents)->default_value(10) ,    "Number of Events ")
       ("Debug",          po::value<int>(&fDebug) ->default_value(0) ,     "Debug flag")
-      ("InFlie",         po::value<string>(&infile) ->default_value("/u/at/pnef/Work/Code/MadGraph/MG5_aMC_v2_0_1/20140421_SM_ttbar_allhadronic/Events/run_01/unweighted_events.lhe") ,     "input file")
       ("OutFile",        po::value<string>(&outName)->default_value("test.root"), "output file name")
       ("nPU",            po::value<int>(&nPU) ->default_value(0) ,     "n PU interactions")
       ("nFlatPUMax",     po::value<int>(&nFlatPUMax) ->default_value(0) ,     "generate flat PU distribution up to NPV = nFlatPUMax")
@@ -87,7 +85,7 @@ int main(int argc, char* argv[]){
    pythia8->readString("32:onIfAny = 1 2 3 4");
    */
 
-   // Configure pythia for W'->WZ
+   // Configure pythia for Z' to ttbar, all hadronic
    Pythia8::Pythia* pythia8 = new Pythia8::Pythia();
    pythia8->readString("Random:setSeed = on");
    std::stringstream ss; ss << "Random:seed = " << seed;
@@ -101,7 +99,6 @@ int main(int argc, char* argv[]){
    pythia8->readString("24:onMode = off");
    pythia8->readString("24:onIfAny = 1 2 3 4");
    pythia8->init(2212 /* p */, 2212 /* p */, 14000. /* TeV */); //this has to be the last line!
-
 
    // configure pythia for PU generation
    Pythia8::Pythia* pythia_MB = new Pythia8::Pythia();

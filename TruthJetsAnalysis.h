@@ -68,17 +68,28 @@ class TruthJetsAnalysis{
         float            fTParticleEta             [MaxNParticles];
         float            fTParticlePhi             [MaxNParticles];
         float            fTParticleIsHS            [MaxNParticles];
-        float            fTParticlePtMomentPU01    [MaxNParticles];
-        float            fTParticlePtMomentHS01    [MaxNParticles];
 
-    
+        float            fTParticlePtMomentPU01_03  [MaxNParticles];  
+        float            fTParticlePtMomentHS01_03  [MaxNParticles]; 
+        float            fTParticlePtMomentAll01_03 [MaxNParticles]; 
+        float            fTParticlePtMomentPU02_03  [MaxNParticles]; 
+        float            fTParticlePtMomentHS02_03  [MaxNParticles]; 
+        float            fTParticlePtMomentAll02_03 [MaxNParticles]; 
+        float            fTParticlePtMomentPU03_03  [MaxNParticles]; 
+        float            fTParticlePtMomentHS03_03  [MaxNParticles]; 
+        float            fTParticlePtMomentAll03_03 [MaxNParticles]; 
+        float            fTParticlePtMomentPU03_05  [MaxNParticles]; 
+        float            fTParticlePtMomentHS03_05  [MaxNParticles]; 
+        float            fTParticlePtMomentAll03_05 [MaxNParticles]; 
+        float            fTParticleJVFMoment01_03      [MaxNParticles];      
+        float            fTParticleJVFMoment02_03      [MaxNParticles];  
+        float            fTParticleJVFMoment03_03      [MaxNParticles];  
+        float            fTParticleJVFMoment03_05      [MaxNParticles];          
+        float            fTParticleJVFMoment01_03_gaus [MaxNParticles];   
+        float            fTParticleJVFMoment02_03_gaus [MaxNParticles];  
+        float            fTParticleJVFMoment03_03_gaus [MaxNParticles];  
+        float            fTParticleJVFMoment03_05_gaus [MaxNParticles];  
 
-
-
-        
 };
-
-
-
 #endif
 

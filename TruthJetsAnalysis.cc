@@ -158,25 +158,66 @@ void TruthJetsAnalysis::AnalyzeEvent(int ievt, Pythia8::Pythia* pythia8, Pythia8
     fastjet::Selector selector_tracks   =  SelectorTracks();
     fastjet::Selector selector_hstracks =  selector_hs && selector_tracks;
     fastjet::Selector selector_putracks = !selector_hs && selector_tracks;
-    vector<fastjet::PseudoJet> putracks, hstracks, dummy;
+    vector<fastjet::PseudoJet> putracks, hstracks, tracks, dummy;
     selector_hstracks.sift(particles, hstracks, dummy);
     selector_putracks.sift(particles, putracks, dummy);
+    selector_tracks  .sift(particles, tracks, dummy);
     
     /// Calculate moments 
     for(int ip=0; ip<particles.size(); ++ip){
-        float pt_moment_hs_0p1 = tool->PtMoment(particles[ip], hstracks, 0.1); 
-        float pt_moment_pu_0p1 = tool->PtMoment(particles[ip], putracks, 0.1); 
-//        cout << particles[ip].pt() << " pu " << particles[ip].user_info<MyUserInfo>().is_pileup() << " " << pt_moment_hs_0p1 << " "  << pt_moment_pu_0p1  << endl;
+        // pT moments 
+        float pt_moment_hs_0p1_0p3  = tool->PtMoment(particles[ip], hstracks,  0.1, 0.3); 
+        float pt_moment_pu_0p1_0p3  = tool->PtMoment(particles[ip], putracks,  0.1, 0.3); 
+        float pt_moment_All_0p1_0p3 = tool->PtMoment(particles[ip], particles, 0.1, 0.3); 
+        float pt_moment_hs_0p2_0p3  = tool->PtMoment(particles[ip], hstracks,  0.2, 0.3); 
+        float pt_moment_pu_0p2_0p3  = tool->PtMoment(particles[ip], putracks,  0.2, 0.3); 
+        float pt_moment_All_0p2_0p3 = tool->PtMoment(particles[ip], particles, 0.2, 0.3); 
+        float pt_moment_hs_0p3_0p3  = tool->PtMoment(particles[ip], hstracks,  0.3, 0.3); 
+        float pt_moment_pu_0p3_0p3  = tool->PtMoment(particles[ip], putracks,  0.3, 0.3); 
+        float pt_moment_All_0p3_0p3 = tool->PtMoment(particles[ip], particles, 0.3, 0.3); 
+        float pt_moment_hs_0p3_0p5  = tool->PtMoment(particles[ip], hstracks,  0.3, 0.5); 
+        float pt_moment_pu_0p3_0p5  = tool->PtMoment(particles[ip], putracks,  0.3, 0.5); 
+        float pt_moment_All_0p3_0p5 = tool->PtMoment(particles[ip], particles, 0.3, 0.5); 
+
+        // JVF moments 
+        float JVF_moment_0p1_0p3       = tool->JVFMomentCalculator(particles[ip], tracks,     false ,0.1, 0.3); 
+        float JVF_moment_0p2_0p3       = tool->JVFMomentCalculator(particles[ip], tracks,     false ,0.2, 0.3); 
+        float JVF_moment_0p3_0p3       = tool->JVFMomentCalculator(particles[ip], tracks,     false ,0.3, 0.3); 
+        float JVF_moment_0p3_0p5       = tool->JVFMomentCalculator(particles[ip], tracks,     false ,0.3, 0.5); 
+        float JVF_moment_0p1_0p3_gaus  = tool->JVFMomentCalculator(particles[ip], tracks,     true  ,0.1, 0.3); 
+        float JVF_moment_0p2_0p3_gaus  = tool->JVFMomentCalculator(particles[ip], tracks,     true  ,0.2, 0.3); 
+        float JVF_moment_0p3_0p3_gaus  = tool->JVFMomentCalculator(particles[ip], tracks,     true  ,0.3, 0.3); 
+        float JVF_moment_0p3_0p5_gaus  = tool->JVFMomentCalculator(particles[ip], tracks,     true  ,0.3, 0.5); 
 
         // filling  ------------
         if(fTNParticlesFilled == MaxNParticles) continue;
-        cout << fTNParticlesFilled << " " << MaxNParticles << endl;
-        fTParticlePt             [fTNParticlesFilled] = particles[ip].pt();
-        fTParticleEta            [fTNParticlesFilled] = particles[ip].eta();
-        fTParticlePhi            [fTNParticlesFilled] = particles[ip].phi();
-        fTParticlePtMomentPU01   [fTNParticlesFilled] = pt_moment_pu_0p1;
-        fTParticlePtMomentHS01   [fTNParticlesFilled] = pt_moment_hs_0p1;
-        fTParticleIsHS           [fTNParticlesFilled] = (particles[ip].user_info<MyUserInfo>().is_pileup()?0:1);
+        fTParticlePt                [fTNParticlesFilled] = particles[ip].pt();
+        fTParticleEta               [fTNParticlesFilled] = particles[ip].eta();
+        fTParticlePhi               [fTNParticlesFilled] = particles[ip].phi();
+        fTParticleIsHS              [fTNParticlesFilled] = (particles[ip].user_info<MyUserInfo>().is_pileup()?0:1);
+
+        fTParticlePtMomentPU01_03   [fTNParticlesFilled] = pt_moment_pu_0p1_0p3;
+        fTParticlePtMomentHS01_03   [fTNParticlesFilled] = pt_moment_hs_0p1_0p3;
+        fTParticlePtMomentAll01_03  [fTNParticlesFilled] = pt_moment_All_0p1_0p3;
+        fTParticlePtMomentPU02_03   [fTNParticlesFilled] = pt_moment_pu_0p2_0p3;
+        fTParticlePtMomentHS02_03   [fTNParticlesFilled] = pt_moment_hs_0p2_0p3;
+        fTParticlePtMomentAll02_03  [fTNParticlesFilled] = pt_moment_All_0p2_0p3;
+        fTParticlePtMomentPU03_03   [fTNParticlesFilled] = pt_moment_pu_0p3_0p3;
+        fTParticlePtMomentHS03_03   [fTNParticlesFilled] = pt_moment_hs_0p3_0p3;
+        fTParticlePtMomentAll03_03  [fTNParticlesFilled] = pt_moment_All_0p3_0p3;
+        fTParticlePtMomentPU03_05   [fTNParticlesFilled] = pt_moment_pu_0p3_0p5;
+        fTParticlePtMomentHS03_05   [fTNParticlesFilled] = pt_moment_hs_0p3_0p5;
+        fTParticlePtMomentAll03_05  [fTNParticlesFilled] = pt_moment_All_0p3_0p5;
+
+        fTParticleJVFMoment01_03        [fTNParticlesFilled] = JVF_moment_0p1_0p3;
+        fTParticleJVFMoment02_03        [fTNParticlesFilled] = JVF_moment_0p2_0p3;
+        fTParticleJVFMoment03_03        [fTNParticlesFilled] = JVF_moment_0p3_0p3;
+        fTParticleJVFMoment03_05        [fTNParticlesFilled] = JVF_moment_0p3_0p5;
+        fTParticleJVFMoment01_03_gaus   [fTNParticlesFilled] = JVF_moment_0p1_0p3_gaus;
+        fTParticleJVFMoment02_03_gaus   [fTNParticlesFilled] = JVF_moment_0p2_0p3_gaus;
+        fTParticleJVFMoment03_03_gaus   [fTNParticlesFilled] = JVF_moment_0p3_0p3_gaus;
+        fTParticleJVFMoment03_05_gaus   [fTNParticlesFilled] = JVF_moment_0p3_0p5_gaus;
+
         fTNParticlesFilled++;
 
     }
@@ -199,14 +240,33 @@ void TruthJetsAnalysis::DeclareBranches(){
    tT->Branch("EventNumber",               &fTEventNumber,            "EventNumber/I");
    tT->Branch("NPV",                       &fTNPV,                    "NPV/I");
 
-   // smallR jets
+   // smAllR jets
    tT->Branch("NParticlesFilled",          &fTNParticlesFilled,        "NParticlesFilled/I");
-   tT->Branch("ParticlePt",                &fTParticlePt,              "ParticlePt           [NParticlesFilled]/F");
-   tT->Branch("ParticleEta",               &fTParticleEta,             "ParticleEta          [NParticlesFilled]/F");
-   tT->Branch("ParticlePhi",               &fTParticlePhi,             "ParticlePhi          [NParticlesFilled]/F");
-   tT->Branch("ParticlePtMomentPU01",      &fTParticlePtMomentPU01,    "ParticlePtMomentPU01 [NParticlesFilled]/F");
-   tT->Branch("ParticlePtMomentHS01",      &fTParticlePtMomentHS01,    "ParticlePtMomentHS01 [NParticlesFilled]/F");
-   tT->Branch("ParticleIsHS",              &fTParticleIsHS,            "ParticleIsHS         [NParticlesFilled]/F");
+   tT->Branch("Pt",                &fTParticlePt,              "Pt           [NParticlesFilled]/F");
+   tT->Branch("Eta",               &fTParticleEta,             "Eta          [NParticlesFilled]/F");
+   tT->Branch("Phi",               &fTParticlePhi,             "Phi          [NParticlesFilled]/F");
+   tT->Branch("IsHS",              &fTParticleIsHS,            "IsHS         [NParticlesFilled]/F");
+   tT->Branch("PtMomentPU01_03",   &fTParticlePtMomentPU01_03, "PtMomentPU01_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentHS01_03",   &fTParticlePtMomentHS01_03, "PtMomentHS01_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentAll01_03",  &fTParticlePtMomentAll01_03,"PtMomentAll01_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentPU02_03",   &fTParticlePtMomentPU02_03, "PtMomentPU02_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentHS02_03",   &fTParticlePtMomentHS02_03, "PtMomentHS02_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentAll02_03",  &fTParticlePtMomentAll02_03,"PtMomentAll02_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentPU03_03",   &fTParticlePtMomentPU03_03, "PtMomentPU03_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentHS03_03",   &fTParticlePtMomentHS03_03, "PtMomentHS03_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentAll03_03",  &fTParticlePtMomentAll03_03,"PtMomentAll03_03[NParticlesFilled]/F");
+   tT->Branch("PtMomentPU03_05",   &fTParticlePtMomentPU03_05, "PtMomentPU03_05[NParticlesFilled]/F");
+   tT->Branch("PtMomentHS03_05",   &fTParticlePtMomentHS03_05, "PtMomentHS03_05[NParticlesFilled]/F");
+   tT->Branch("PtMomentAll03_05",  &fTParticlePtMomentAll03_05,"PtMomentAll03_05[NParticlesFilled]/F");
+
+   tT->Branch("JVFMoment01_03",         &fTParticleJVFMoment01_03,       "JVFMoment01_03[NParticlesFilled]/F");
+   tT->Branch("JVFMoment02_03",         &fTParticleJVFMoment02_03,       "JVFMoment02_03[NParticlesFilled]/F");
+   tT->Branch("JVFMoment03_03",         &fTParticleJVFMoment03_03,       "JVFMoment03_03[NParticlesFilled]/F");
+   tT->Branch("JVFMoment03_05",         &fTParticleJVFMoment03_05,       "JVFMoment03_05[NParticlesFilled]/F");
+   tT->Branch("JVFMoment01_03_gaus",    &fTParticleJVFMoment01_03_gaus,  "JVFMoment01_03_gaus[NParticlesFilled]/F");
+   tT->Branch("JVFMoment02_03_gaus",    &fTParticleJVFMoment02_03_gaus,  "JVFMoment02_03_gaus[NParticlesFilled]/F");
+   tT->Branch("JVFMoment03_03_gaus",    &fTParticleJVFMoment03_03_gaus,  "JVFMoment03_03_gaus[NParticlesFilled]/F");
+   tT->Branch("JVFMoment03_05_gaus",    &fTParticleJVFMoment03_05_gaus,  "JVFMoment03_05_gaus[NParticlesFilled]/F");
    
    tT->GetListOfBranches()->ls();
     
@@ -222,14 +282,34 @@ void TruthJetsAnalysis::ResetBranches(){
       fTNParticlesFilled            = 0;
 
       for (int iP=0; iP < MaxNParticles; ++iP){
-          fTParticlePt           [iP]= -999;
-          fTParticlePhi          [iP]= -999;
-          fTParticleEta          [iP]= -999;
-          fTParticleIsHS         [iP]= -999;
-          fTParticlePtMomentPU01 [iP]= -999;
-          fTParticlePtMomentHS01 [iP]= -999;
-      }
+          fTParticlePt               [iP]= -999;
+          fTParticlePhi              [iP]= -999;
+          fTParticleEta              [iP]= -999;
+          fTParticleIsHS             [iP]= -999;
 
+          fTParticlePtMomentPU01_03  [iP]= -999;
+          fTParticlePtMomentHS01_03  [iP]= -999;
+          fTParticlePtMomentAll01_03 [iP]= -999;
+          fTParticlePtMomentPU02_03  [iP]= -999;
+          fTParticlePtMomentHS02_03  [iP]= -999;
+          fTParticlePtMomentAll02_03 [iP]= -999;
+          fTParticlePtMomentPU03_03  [iP]= -999;
+          fTParticlePtMomentHS03_03  [iP]= -999;
+          fTParticlePtMomentAll03_03 [iP]= -999;
+          fTParticlePtMomentPU03_05  [iP]= -999;
+          fTParticlePtMomentHS03_05  [iP]= -999;
+          fTParticlePtMomentAll03_05 [iP]= -999;
+          
+          fTParticleJVFMoment01_03      [iP]= -999;
+          fTParticleJVFMoment02_03      [iP]= -999;
+          fTParticleJVFMoment03_03      [iP]= -999;
+          fTParticleJVFMoment03_05      [iP]= -999;
+          fTParticleJVFMoment01_03_gaus [iP]= -999;
+          fTParticleJVFMoment02_03_gaus [iP]= -999;
+          fTParticleJVFMoment03_03_gaus [iP]= -999;
+          fTParticleJVFMoment03_05_gaus [iP]= -999;
+
+      }
 }
 
 
