@@ -29,6 +29,7 @@ class TruthJetsTools {
       // moment calculator 
       float PtMoment            (fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles, float sigma, float maxdR);
       float JVFMomentCalculator (fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles, bool gaussianWeight, float sigma, float maxdR);
+      float AlphaMoment(fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles, float maxdR);
 };
 
 #endif

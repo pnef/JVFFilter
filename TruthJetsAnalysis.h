@@ -90,6 +90,9 @@ class TruthJetsAnalysis{
         float            fTParticleJVFMoment03_03_gaus [MaxNParticles];  
         float            fTParticleJVFMoment03_05_gaus [MaxNParticles];  
 
+        float            fTParticleAlphaC [MaxNParticles];
+        float            fTParticleAlphaF [MaxNParticles];
+
 };
 #endif
 

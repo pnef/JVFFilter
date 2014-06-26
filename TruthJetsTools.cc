@@ -55,6 +55,19 @@ float TruthJetsTools::PtMoment(fastjet::PseudoJet particle, vector<fastjet::Pseu
     return sum;
 }
 
+//  CMS alpha calculator
+float TruthJetsTools::AlphaMoment(fastjet::PseudoJet particle, vector<fastjet::PseudoJet> &otherParticles, float maxdR){
+    // sum (p_T / Delta_R), for Delta_R < maxdR
+    float sum = 0;
+    for(int ip=0; ip<otherParticles.size(); ++ip){
+        if(particle == otherParticles[ip])               continue; 
+        if(particle.delta_R(otherParticles[ip]) > maxdR) continue;
+        sum  += (otherParticles[ip].pt() / otherParticles[ip].delta_R(particle));
+    }
+
+    return sum;
+}
+
 // matching to truth jets: return true if dR to closest truth jet < dR
 bool TruthJetsTools::TruthMatchDR(fastjet::PseudoJet jet, vector<fastjet::PseudoJet> TruthJets, float dR, float& truthmatchpt){
     float highestmatchpt = -999;

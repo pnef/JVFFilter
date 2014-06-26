@@ -106,7 +106,6 @@ bool TruthJetsAnalysis::GetPythiaParticles(Pythia8::Pythia* pythia8, event_type 
 
             // tracks: charged particles with pt>0.5 GeV, |eta|<2.4 
             if(! (pythia8->event[ip].isFinal()    && 
-                  fabs(pythia8->event[ip].id())  !=11  && 
                   fabs(pythia8->event[ip].id())  !=12  && 
                   fabs(pythia8->event[ip].id())  !=13  && 
                   fabs(pythia8->event[ip].id())  !=14  && 
@@ -189,6 +188,10 @@ void TruthJetsAnalysis::AnalyzeEvent(int ievt, Pythia8::Pythia* pythia8, Pythia8
         float JVF_moment_0p3_0p3_gaus  = tool->JVFMomentCalculator(particles[ip], tracks,     true  ,0.3, 0.3); 
         float JVF_moment_0p3_0p5_gaus  = tool->JVFMomentCalculator(particles[ip], tracks,     true  ,0.3, 0.5); 
 
+        // CMS alpha_F 
+        float alpha_F = tool->AlphaMoment(particles[ip], particles, 0.3);
+        float alpha_C = tool->AlphaMoment(particles[ip], hstracks,  0.3);
+
         // filling  ------------
         if(fTNParticlesFilled == MaxNParticles) continue;
         fTParticlePt                [fTNParticlesFilled] = particles[ip].pt();
@@ -217,6 +220,9 @@ void TruthJetsAnalysis::AnalyzeEvent(int ievt, Pythia8::Pythia* pythia8, Pythia8
         fTParticleJVFMoment02_03_gaus   [fTNParticlesFilled] = JVF_moment_0p2_0p3_gaus;
         fTParticleJVFMoment03_03_gaus   [fTNParticlesFilled] = JVF_moment_0p3_0p3_gaus;
         fTParticleJVFMoment03_05_gaus   [fTNParticlesFilled] = JVF_moment_0p3_0p5_gaus;
+
+        fTParticleAlphaF                [fTNParticlesFilled] = alpha_F;
+        fTParticleAlphaC                [fTNParticlesFilled] = alpha_C;
 
         fTNParticlesFilled++;
 
@@ -268,6 +274,8 @@ void TruthJetsAnalysis::DeclareBranches(){
    tT->Branch("JVFMoment03_03_gaus",    &fTParticleJVFMoment03_03_gaus,  "JVFMoment03_03_gaus[NParticlesFilled]/F");
    tT->Branch("JVFMoment03_05_gaus",    &fTParticleJVFMoment03_05_gaus,  "JVFMoment03_05_gaus[NParticlesFilled]/F");
    
+   tT->Branch("ParticleAlphaC",    &fTParticleAlphaC,  "ParticleAlphaC[NParticlesFilled]/F");
+   tT->Branch("ParticleAlphaF",    &fTParticleAlphaF,  "ParticleAlphaF[NParticlesFilled]/F");
    tT->GetListOfBranches()->ls();
     
    return;
@@ -308,6 +316,9 @@ void TruthJetsAnalysis::ResetBranches(){
           fTParticleJVFMoment02_03_gaus [iP]= -999;
           fTParticleJVFMoment03_03_gaus [iP]= -999;
           fTParticleJVFMoment03_05_gaus [iP]= -999;
+
+          fTParticleAlphaC              [iP]=-999;
+          fTParticleAlphaF              [iP]=-999;
 
       }
 }
